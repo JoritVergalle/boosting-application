@@ -5,6 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var mongoose = require('mongoose');
+
+require('./models/Boosts');
+require('./models/Buyers');
+
+mongoose.connect('mongodb://localhost/boost');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 
