@@ -5,10 +5,22 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var mongoose = require('mongoose');
+
+require('./models/Boosts');
+require('./models/Buyers');
+
+mongoose.connect('mongodb://localhost/boost');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+var moment = require('moment');
+var normalFormat = "DD/MM/YYYY"; // this is just an example of storing a date format once so you can change it in one place and have it propagate
+app.locals.moment = moment; // this makes moment available as a variable in every EJS page
+app.locals.normalFormat = normalFormat;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
