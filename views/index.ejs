@@ -25,6 +25,9 @@
                 {{boost.name}} on {{boost.date}}
 
             </span>
+      <span>
+  <a href="#/boosts/{{$index}}">Buyers</a>
+</span>
     </div>
 
     <form ng-submit="addBoost()"
@@ -43,6 +46,54 @@
                ng-model="date"/>
       </div>
       <button type="submit" class="btn btn-primary">Add new boost</button>
+    </form>
+  </script>
+
+  <script type="text/ng-template" id="/boosts.html">
+    <div class="page-header">
+      <h3>
+        {{boost.name}} - {{boost.date}}
+      </h3>
+    </div>
+
+    <div ng-repeat="buyer in boost.buyers">
+      {{buyer.name}} ({{buyer.battletag}})
+      <span style="font-size:20px; margin-left:10px;">
+      {{buyer.price}} for {{buyer.what}}
+    </span>
+      - by {{buyer.author}}
+    </div>
+
+
+    <form ng-submit="addBuyer()"
+          style="margin-top:30px;">
+      <h3>Add a new buyer</h3>
+
+      <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="name"
+               ng-model="name"/>
+      </div>
+      <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="battletag"
+               ng-model="battletag"/>
+      </div>
+      <div class="form-group">
+        <input type="number"
+               class="form-control"
+               placeholder="price"
+               ng-model="price"/>
+      </div>
+      <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="what"
+               ng-model="what"/>
+      </div>
+      <button type="submit" class="btn btn-primary">Add new buyer</button>
     </form>
   </script>
 </body>
