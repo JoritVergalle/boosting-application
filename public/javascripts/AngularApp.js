@@ -94,8 +94,8 @@ app.controller('BoostsCtrl', [
                 price: $scope.price,
                 what: $scope.what,
                 user: 'user'
-            }).success(function(boost) {
-                $scope.boost.buyers.push(boost);
+            }).success(function(buyer) {
+                $scope.boost.buyers.push(buyer);
             });
             $scope.name = '';
             $scope.battletag = '';
