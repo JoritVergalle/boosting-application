@@ -86,6 +86,8 @@ app.controller('BoostsCtrl', [
     function($scope, boosts, boost){
         $scope.boost = boost;
 
+        $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+
         $scope.addBuyer = function(){
             if($scope.name === '' || $scope.battletag === '' || $scope.price === '' || $scope.what === '') { return; }
             boosts.addBuyer(boost._id, {

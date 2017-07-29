@@ -1,14 +1,14 @@
 <div class="page-header">
-    <h3>
+    <h1>
         {{boost.name}} - {{boost.date | date:'d/MM/yyyy'}}
-    </h3>
+        <span style="float: right;">{{totalGold}}g</span>
+    </h1>
 </div>
 
 <div ng-repeat="buyer in boost.buyers">
-    {{buyer.name}} ({{buyer.battletag}})
-    <span style="font-size:20px; margin-left:10px;">
-      {{buyer.price}} for {{buyer.what}}
-    </span>
+    <b>{{buyer.name}}</b> ({{buyer.battletag}})
+    <span style="margin-left: 20px">{{buyer.price}}</span>
+    <span style="margin-left: 20px">for {{buyer.what}}</span>
     - by {{buyer.author}}
 </div>
 
