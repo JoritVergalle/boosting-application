@@ -3,13 +3,12 @@
 </div>
 
 <div ng-repeat="boost in boosts">
-          <span style="font-size:20px; margin-left:10px;">
-                {{boost.name}} on {{boost.date}}
-
-            </span>
+    <span style="font-size:20px; margin-left:10px;">
+        {{boost.name}} on {{boost.date | date:'d/MM/yyyy'}}
+    </span>
     <span>
-  <a href="#/boosts/{{boost._id}}">Buyers</a>
-</span>
+        <a href="#/boosts/{{boost._id}}">Buyers</a>
+    </span>
 </div>
 
 <form ng-submit="addBoost()"
