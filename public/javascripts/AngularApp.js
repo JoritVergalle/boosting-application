@@ -8,24 +8,52 @@ app.config([
         $stateProvider
             .state('home', {
                 url: '/home',
-                templateUrl: '/home.html',
-                controller: 'MainCtrl'
+                templateUrl: 'partials/home',
+                controller: 'MainCtrl',
+                //so boost load in before showing page
+                resolve: {
+                    postPromise: ['boosts', function(boosts){
+                        return boosts.getAll();
+                    }]
+                }
             })
+
             .state('posts', {
                 url: '/boosts/{id}',
-                templateUrl: '/boosts.html',
-                controller: 'BoostsCtrl'
+                templateUrl: 'partials/boosts',
+                controller: 'BoostsCtrl',
+                resolve: {
+                    boost: ['$stateParams', 'boosts', function($stateParams, boosts) {
+                        return boosts.get($stateParams.id);
+                    }]
+                }
             });
 
 
         $urlRouterProvider.otherwise('home');
     }]);
 
-app.factory('boosts', [function(){
+app.factory('boosts', ['$http', function($http){
     var o = {
-        boosts: [
-            {name: 'ToS HC', date: new Date(2017, 07, 25)}
-        ]
+        boosts: [],
+    };
+    o.getAll = function() {
+        return $http.get('/boosts').success(function(data){
+            angular.copy(data, o.boosts);
+        });
+    };
+    o.create = function(boost) {
+        return $http.post('/boosts', boost).success(function(data){
+            o.boosts.push(boost);
+        });
+    };
+    o.get = function(id) {
+        return $http.get('/boosts/' + id).then(function(res){
+            return res.data;
+        });
+    };
+    o.addBuyer = function(id, buyer) {
+        return $http.post('/boosts/' + id + '/buyers', buyer);
     };
     return o;
 }]);
@@ -40,13 +68,10 @@ app.controller('MainCtrl', [
 
         $scope.addBoost = function(){
             if(!$scope.name || $scope.name === '') { return; }
-            $scope.boosts.push({
+            boosts.create({
                 name: $scope.name,
                 date: $scope.date,
-                buyers: [
-                    {name:'Felancholy', battletag: 'KelThuzad#2722', price: 500000, what: 'Full Boost'},
-                    {name:'Suwe', battletag: 'Suwe#2722', price: 5000, what: 'Last Two'}
-            ]
+                buyers: []
             });
 
             $scope.name = '';
@@ -56,23 +81,28 @@ app.controller('MainCtrl', [
 
 app.controller('BoostsCtrl', [
     '$scope',
-    '$stateParams',
     'boosts',
-    function($scope, $stateParams, boosts){
-        $scope.boost = boosts.boosts[$stateParams.id];
+    'boost',
+    function($scope, boosts, boost){
+        $scope.boost = boost;
+
+        $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
 
         $scope.addBuyer = function(){
-            if($scope.name === '' || $scope.battletag === '' || $scope.price === '' || $scope.what === '') { return; }
-            $scope.boost.buyers.push({
-                name: $scope.name,
+            if(_.isEmpty($scope.characterName) || _.isEmpty($scope.battletag) || !_.isNumber($scope.price) || _.isEmpty($scope.what)) { return; }
+            boosts.addBuyer(boost._id, {
+                characterName: $scope.characterName,
                 battletag: $scope.battletag,
                 price: $scope.price,
                 what: $scope.what,
-                author: 'user',
+                user: 'user'
+            }).success(function(buyer) {
+                $scope.boost.buyers.push(buyer);
             });
-            $scope.name = '';
+            $scope.characterName = '';
             $scope.battletag = '';
             $scope.price = '';
             $scope.author = '';
+
         };
     }]);
