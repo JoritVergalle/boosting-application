@@ -5,6 +5,7 @@ var BuyerSchema = new mongoose.Schema({
     battletag: String,
     price: Number,
     what: String,
+    finder: String,
     boost: { type: mongoose.Schema.Types.ObjectId, ref: 'Boost' }
 });
 
