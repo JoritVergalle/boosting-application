@@ -89,9 +89,9 @@ app.controller('BoostsCtrl', [
         $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
 
         $scope.addBuyer = function(){
-            if($scope.name === '' || $scope.battletag === '' || $scope.price === '' || $scope.what === '') { return; }
+            if(_.isEmpty($scope.characterName) || _.isEmpty($scope.battletag) || !_.isNumber($scope.price) || _.isEmpty($scope.what)) { return; }
             boosts.addBuyer(boost._id, {
-                name: $scope.name,
+                characterName: $scope.characterName,
                 battletag: $scope.battletag,
                 price: $scope.price,
                 what: $scope.what,
@@ -99,7 +99,7 @@ app.controller('BoostsCtrl', [
             }).success(function(buyer) {
                 $scope.boost.buyers.push(buyer);
             });
-            $scope.name = '';
+            $scope.characterName = '';
             $scope.battletag = '';
             $scope.price = '';
             $scope.author = '';

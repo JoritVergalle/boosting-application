@@ -1,13 +1,10 @@
 var mongoose = require('mongoose');
 
 var BuyerSchema = new mongoose.Schema({
-    name: String,
+    characterName: String,
     battletag: String,
     price: Number,
-    what: {
-        type: String,
-        enum: ['FULL', 'LAST']
-    },
+    what: String,
     boost: { type: mongoose.Schema.Types.ObjectId, ref: 'Boost' }
 });
 
