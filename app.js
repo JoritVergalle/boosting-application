@@ -6,9 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
+var passport = require('passport');
 
 require('./models/Boosts');
+require('./models/Users');
 require('./models/Buyers');
+require('./config/passport');
 
 //mongoose.connect('mongodb://localhost/boost');
 mongoose.connect('mongodb://masterUser:masterUser@ds015774.mlab.com:15774/boosting-application');
@@ -35,6 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', index);
 app.use('/', partialsRoutes);
