@@ -9,18 +9,22 @@
     <b>{{buyer.characterName}}</b> ({{buyer.battletag}})
     <span style="margin-left: 20px">{{buyer.price}}</span>
     <span style="margin-left: 20px">for {{buyer.what}}</span>
-    - by {{buyer.author}}
+    <span style="float:right">added by {{buyer.finder}}</span>
 </div>
 
+<div ng-hide="isLoggedIn()">
+    <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a buyer.</h3>
+</div>
 
 <form ng-submit="addBuyer()"
+      ng-show="isLoggedIn()"
       style="margin-top:30px;">
     <h3>Add a new buyer</h3>
 
     <div class="form-group">
         <input type="text"
                class="form-control"
-               placeholder="characterName"
+               placeholder="character name"
                ng-model="characterName"/>
     </div>
     <div class="form-group">

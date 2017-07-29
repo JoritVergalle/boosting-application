@@ -27,13 +27,35 @@ app.config([
                         return boosts.get($stateParams.id);
                     }]
                 }
+            })
+
+            .state('login', {
+                url: '/login',
+                templateUrl: 'partials/login',
+                controller: 'AuthCtrl',
+                onEnter: ['$state', 'auth', function($state, auth){
+                    if(auth.isLoggedIn()){
+                        $state.go('home');
+                    }
+                }]
+            })
+
+            .state('register', {
+                url: '/register',
+                templateUrl: 'partials/register',
+                controller: 'AuthCtrl',
+                onEnter: ['$state', 'auth', function($state, auth){
+                    if(auth.isLoggedIn()){
+                        $state.go('home');
+                    }
+                }]
             });
 
 
         $urlRouterProvider.otherwise('home');
     }]);
 
-app.factory('boosts', ['$http', function($http){
+app.factory('boosts', ['$http', 'auth', function($http, auth){
     var o = {
         boosts: [],
     };
@@ -43,8 +65,10 @@ app.factory('boosts', ['$http', function($http){
         });
     };
     o.create = function(boost) {
-        return $http.post('/boosts', boost).success(function(data){
-            o.boosts.push(boost);
+        return $http.post('/boosts', boost, {
+            headers: {Authorization: 'Bearer '+auth.getToken()}
+        }).success(function(data){
+            o.boosts.push(data);
         });
     };
     o.get = function(id) {
@@ -53,16 +77,63 @@ app.factory('boosts', ['$http', function($http){
         });
     };
     o.addBuyer = function(id, buyer) {
-        return $http.post('/boosts/' + id + '/buyers', buyer);
+        return $http.post('/boosts/' + id + '/buyers', buyer, {
+            headers: {Authorization: 'Bearer '+auth.getToken()}
+        });
     };
     return o;
+}]);
+
+app.factory('auth', ['$http', '$window', function($http, $window){
+    var auth = {};
+
+    auth.saveToken = function (token){
+        $window.localStorage['flapper-news-token'] = token;
+    };
+    auth.getToken = function (){
+        return $window.localStorage['flapper-news-token'];
+    };
+    auth.isLoggedIn = function(){
+        var token = auth.getToken();
+
+        if(token){
+            var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+            return payload.exp > Date.now() / 1000;
+        } else {
+            return false;
+        }
+    };
+    auth.currentUser = function(){
+        if(auth.isLoggedIn()){
+            var token = auth.getToken();
+            var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+            return payload.username;
+        }
+    };
+    auth.register = function(user){
+        return $http.post('/register', user).success(function(data){
+            auth.saveToken(data.token);
+        });
+    };
+    auth.logIn = function(user){
+        return $http.post('/login', user).success(function(data){
+            auth.saveToken(data.token);
+        });
+    };
+    auth.logOut = function(){
+        $window.localStorage.removeItem('flapper-news-token');
+    };
+    return auth;
 }]);
 
 app.controller('MainCtrl', [
     '$scope',
     'boosts',
-    function($scope, boosts){
-        $scope.test = 'Hello world!';
+    'auth',
+    function($scope, boosts, auth){
+        $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.boosts = boosts.boosts;
 
@@ -83,7 +154,10 @@ app.controller('BoostsCtrl', [
     '$scope',
     'boosts',
     'boost',
-    function($scope, boosts, boost){
+    'auth',
+    function($scope, boosts, boost, auth){
+        $scope.isLoggedIn = auth.isLoggedIn;
+
         $scope.boost = boost;
 
         $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
@@ -105,4 +179,37 @@ app.controller('BoostsCtrl', [
             $scope.author = '';
 
         };
+    }]);
+
+app.controller('AuthCtrl', [
+    '$scope',
+    '$state',
+    'auth',
+    function($scope, $state, auth){
+        $scope.user = {};
+
+        $scope.register = function(){
+            auth.register($scope.user).error(function(error){
+                $scope.error = error;
+            }).then(function(){
+                $state.go('home');
+            });
+        };
+
+        $scope.logIn = function(){
+            auth.logIn($scope.user).error(function(error){
+                $scope.error = error;
+            }).then(function(){
+                $state.go('home');
+            });
+        };
+    }]);
+
+app.controller('NavCtrl', [
+    '$scope',
+    'auth',
+    function($scope, auth){
+        $scope.isLoggedIn = auth.isLoggedIn;
+        $scope.currentUser = auth.currentUser;
+        $scope.logOut = auth.logOut;
     }]);
