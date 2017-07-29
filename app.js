@@ -10,7 +10,8 @@ var mongoose = require('mongoose');
 require('./models/Boosts');
 require('./models/Buyers');
 
-mongoose.connect('mongodb://localhost/boost');
+//mongoose.connect('mongodb://localhost/boost');
+mongoose.connect('mongodb://masterUser:masterUser@ds015774.mlab.com:15774/boosting-application');
 
 var index = require('./routes/index');
 var partialsRoutes = require('./routes/partials');
