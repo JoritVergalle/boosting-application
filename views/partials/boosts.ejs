@@ -5,22 +5,28 @@
     </h1>
 </div>
 
-<table class="table">
-    <thead>
-    <th>Character name</th>
-    <th>Battlenet Tag</th>
-    <th>Run</th>
-    <th>Finder</th>
-    <th>Price</th>
-    </thead>
-    <tr ng-repeat="buyer in boost.buyers">
-        <td>{{buyer.characterName}}</td>
-        <td>{{buyer.battletag}}</td>
-        <td>{{buyer.what}}</td>
-        <td>{{buyer.finder}}</td>
-        <td>{{buyer.price}}g</td>
-    </tr>
-</table>
+<div ng-show="showTableHideForm">
+    <table class="table" >
+        <thead>
+        <th>Character name</th>
+        <th>Battlenet tag</th>
+        <th>Run</th>
+        <th>Finder</th>
+        <th>Price</th>
+        </thead>
+        <tr ng-repeat="buyer in boost.buyers">
+            <td>{{buyer.characterName}}</td>
+            <td>{{buyer.battletag}}</td>
+            <td>{{buyer.what}}</td>
+            <td>{{buyer.finder}}</td>
+            <td>{{buyer.price}}g</td>
+        </tr>
+    </table>
+    <div ng-show="isLoggedIn()">
+        <button type="button" class="btn btn-success" ng-click="changeShowTableHideForm()">Add a new buyer</button>
+    </div>
+</div>
+
 
 
 <div ng-hide="isLoggedIn()">
@@ -29,28 +35,24 @@
 
 <form ng-submit="addBuyer()"
       ng-show="isLoggedIn()"
+      ng-hide="showTableHideForm"
       style="margin-top:30px;">
     <h3>Add a new buyer</h3>
 
     <div class="form-group">
+        <label>Character name</label>
         <input type="text"
                class="form-control"
-               placeholder="character name"
                ng-model="characterName"/>
-    </div>
-    <div class="form-group">
+        <label>Battlenet tag</label>
         <input type="text"
                class="form-control"
-               placeholder="battletag"
                ng-model="battletag"/>
-    </div>
-    <div class="form-group">
+        <label>Price</label>
         <input type="number"
                class="form-control"
-               placeholder="price"
                ng-model="price"/>
-    </div>
-    <div class="form-group">
+        <label>Run</label>
         <label name="what" for="what">Which boost</label>
         <select class="form-control" required ng-model="what">
             <option>Full</option>
@@ -58,4 +60,5 @@
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Add new buyer</button>
+    <button type="button" class="btn btn-danger" ng-click="changeShowTableHideForm()">Cancel</button>
 </form>

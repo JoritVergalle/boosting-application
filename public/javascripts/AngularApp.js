@@ -133,6 +133,15 @@ app.controller('MainCtrl', [
     'boosts',
     'auth',
     function($scope, boosts, auth){
+        $scope.showTableHideForm = true;
+
+        $scope.changeShowTableHideForm = function() {
+            if($scope.showTableHideForm == true){
+                $scope.showTableHideForm = false;
+            }
+            else $scope.showTableHideForm = true;
+        };
+
         $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.boosts = boosts.boosts;
@@ -147,6 +156,7 @@ app.controller('MainCtrl', [
 
             $scope.name = '';
             $scope.date = '';
+            $scope.changeShowTableHideForm();
         };
     }]);
 
@@ -156,6 +166,14 @@ app.controller('BoostsCtrl', [
     'boost',
     'auth',
     function($scope, boosts, boost, auth){
+        $scope.showTableHideForm = true;
+
+        $scope.changeShowTableHideForm = function() {
+            if($scope.showTableHideForm == true){
+                $scope.showTableHideForm = false;
+            }
+            else $scope.showTableHideForm = true;
+        };
         $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.boost = boost;
@@ -177,7 +195,7 @@ app.controller('BoostsCtrl', [
             $scope.battletag = '';
             $scope.price = '';
             $scope.author = '';
-
+            $scope.changeShowTableHideForm();
         };
     }]);
 
