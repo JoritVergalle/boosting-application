@@ -2,14 +2,19 @@
     <h1>Boosting Application</h1>
 </div>
 
-<div ng-repeat="boost in boosts">
-    <span style="font-size:20px; margin-left:10px;">
-        {{boost.name}} on {{boost.date | date:'d/MM/yyyy'}}
-    </span>
-    <span>
-        <a href="#/boosts/{{boost._id}}">Buyers</a>
-    </span>
-</div>
+<table class="table">
+    <thead>
+        <th>Boost</th>
+        <th>Date</th>
+    </thead>
+    <tr ng-repeat="boost in boosts">
+        <td>{{boost.name}}</td>
+        <td>{{boost.date | date:'dd/MM/yyyy'}}</td>
+        <td>
+            <a class="glyphicon glyphicon-th-list" href="#/boosts/{{boost._id}}"></a>
+        </td>
+    </tr>
+</table>
 
 <div ng-hide="isLoggedIn()">
     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a boostrun.</h3>

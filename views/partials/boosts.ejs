@@ -5,12 +5,23 @@
     </h1>
 </div>
 
-<div ng-repeat="buyer in boost.buyers">
-    <b>{{buyer.characterName}}</b> ({{buyer.battletag}})
-    <span style="margin-left: 20px">{{buyer.price}}</span>
-    <span style="margin-left: 20px">for {{buyer.what}}</span>
-    <span style="float:right">added by {{buyer.finder}}</span>
-</div>
+<table class="table">
+    <thead>
+    <th>Character name</th>
+    <th>Battlenet Tag</th>
+    <th>Run</th>
+    <th>Finder</th>
+    <th>Price</th>
+    </thead>
+    <tr ng-repeat="buyer in boost.buyers">
+        <td>{{buyer.characterName}}</td>
+        <td>{{buyer.battletag}}</td>
+        <td>{{buyer.what}}</td>
+        <td>{{buyer.finder}}</td>
+        <td>{{buyer.price}}g</td>
+    </tr>
+</table>
+
 
 <div ng-hide="isLoggedIn()">
     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a buyer.</h3>
