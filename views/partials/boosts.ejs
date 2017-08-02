@@ -1,12 +1,12 @@
 <div class="page-header">
     <h1>
         {{boost.name}} - {{boost.date | date:'d/MM/yyyy'}}
-        <span style="float: right;">{{totalGold}}g</span>
+        <gspan style="float: right;" gold="totalGold"/>
     </h1>
 </div>
 
 <div ng-show="showTableHideForm">
-    <table class="table" >
+    <table class="table">
         <thead>
         <th>Character name</th>
         <th>Battlenet tag</th>
@@ -19,7 +19,7 @@
             <td>{{buyer.battletag}}</td>
             <td>{{buyer.what}}</td>
             <td>{{buyer.finder}}</td>
-            <td>{{buyer.price}}g</td>
+            <td><gspan gold="buyer.price"></gspan></td>
         </tr>
     </table>
     <div ng-show="isLoggedIn()">

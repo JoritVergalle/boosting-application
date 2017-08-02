@@ -231,3 +231,16 @@ app.controller('NavCtrl', [
         $scope.currentUser = auth.currentUser;
         $scope.logOut = auth.logOut;
     }]);
+
+app.directive('gspan', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            gold: '=gold'
+        },
+        template:
+        '<span>'
+        +'{{gold}}g'
+        +'</span>'
+    };
+});
