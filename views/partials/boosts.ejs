@@ -20,6 +20,7 @@
             <td>{{buyer.what}}</td>
             <td>{{buyer.finder}}</td>
             <td><gspan gold="buyer.price"></gspan></td>
+            <td class="glyphicon glyphicon-trash" ng-click="deleteBuyer(buyer)"></td>
         </tr>
     </table>
     <div ng-show="isLoggedIn()">

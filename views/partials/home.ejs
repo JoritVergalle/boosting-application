@@ -12,8 +12,9 @@
             <td>{{boost.name}}</td>
             <td>{{boost.date | date:'dd/MM/yyyy'}}</td>
             <td>
-                <a class="glyphicon glyphicon-th-list" href="#/boosts/{{boost._id}}"></a>
+                <a style="float:right" class="glyphicon glyphicon-th-list" href="#/boosts/{{boost._id}}"></a>
             </td>
+            <td class="glyphicon glyphicon-trash" ng-click="deleteBoost(boost)"></td>
         </tr>
     </table>
     <div ng-show="isLoggedIn()">

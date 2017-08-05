@@ -79,7 +79,18 @@ app.factory('boosts', ['$http', 'auth', function($http, auth){
     o.addBuyer = function(id, buyer) {
         return $http.post('/boosts/' + id + '/buyers', buyer, {
             headers: {Authorization: 'Bearer '+auth.getToken()}
+        }).success(function(data){
+            console.log(data);
+            console.log(o.boosts);
         });
+    };
+    o.deleteBoost = function(boost){
+        return $http.delete('/boosts/' + boost._id).success(function(data) {
+            _.remove(o.boosts, {_id : data._id});
+        });
+    };
+    o.deleteBuyer = function(buyer) {
+        return $http.delete('/boosts/' + buyer.boost + '/buyers/' + buyer._id);
     };
     return o;
 }]);
@@ -158,6 +169,10 @@ app.controller('MainCtrl', [
             $scope.date = '';
             $scope.changeShowTableHideForm();
         };
+
+        $scope.deleteBoost = function(boost) {
+            boosts.deleteBoost(boost);
+        };
     }]);
 
 app.controller('BoostsCtrl', [
@@ -189,13 +204,23 @@ app.controller('BoostsCtrl', [
                 what: $scope.what,
                 user: 'user'
             }).success(function(buyer) {
-                $scope.boost.buyers.push(buyer);
+
+                //console.log($scope.boost.buyers);
+                //$scope.boost.buyers.push(buyer);
             });
             $scope.characterName = '';
             $scope.battletag = '';
             $scope.price = '';
             $scope.author = '';
+            $scope.what = '';
             $scope.changeShowTableHideForm();
+        };
+
+        $scope.deleteBuyer = function(buyer) {
+            boosts.deleteBuyer(buyer).success(function(buyer){
+                _.remove($scope.boost.buyers,{_id: buyer._id});
+                $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+            });
         };
     }]);
 
