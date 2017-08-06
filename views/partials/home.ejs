@@ -2,7 +2,7 @@
     <h1>Boosting Application</h1>
 </div>
 
-<div ng-show="showTableHideForm">
+<div ng-hide="showTableHideForm">
     <table class="table">
         <thead>
         <th>Boost</th>
@@ -14,36 +14,41 @@
             <td>
                 <a style="float:right" class="glyphicon glyphicon-th-list" href="#/boosts/{{boost._id}}"></a>
             </td>
+            <td class="glyphicon glyphicon-edit" ng-click="showBoost(boost)"></td>
             <td class="glyphicon glyphicon-trash" ng-click="deleteBoost(boost)"></td>
         </tr>
     </table>
     <div ng-show="isLoggedIn()">
-        <button type="button" class="btn btn-success" ng-click="changeShowTableHideForm()">Add a new boost</button>
+        <div ng-hide="showTableHideForm" >
+            <button type="button" class="btn btn-success" ng-click="showTableHideForm = true">Add a new boost</button>
+        </div>
     </div>
-</div>
 
+</div>
 
 <div ng-hide="isLoggedIn()">
     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a boostrun.</h3>
 </div>
 
-<form ng-submit="addBoost()"
-      ng-show="isLoggedIn()"
-      ng-hide="showTableHideForm"
-      style="margin-top:30px;">
-    <h3>Add a new boost</h3>
+<div ng-show="isLoggedIn()">
+    <form ng-submit="addBoost()"
+          ng-show="showTableHideForm"
+          style="margin-top:30px;">
+        <h3 ng-hide="editMode">Add a new boost</h3>
 
-    <div class="form-group">
-        <input type="text"
-               class="form-control"
-               placeholder="Title"
-               ng-model="name"/>
-    </div>
-    <div class="form-group">
-        <input type="date"
-               class="form-control"
-               ng-model="date"/>
-    </div>
-    <button type="submit" class="btn btn-primary">Confirm</button>
-    <button type="button" class="btn btn-danger" ng-click="changeShowTableHideForm()">Cancel</button>
-</form>
+        <div class="form-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Title"
+                   ng-model="name"/>
+        </div>
+        <div class="form-group">
+            <input type="date"
+                   class="form-control"
+                   ng-model="date"/>
+        </div>
+        <button type="submit" class="btn btn-primary" ng-hide="editMode">Confirm</button>
+        <button class="btn btn-primary" type="button" ng-show="editMode" ng-click=editBoost()>Edit</button>
+        <button type="button" class="btn btn-danger" ng-click="cancelForm()">Cancel</button>
+    </form>
+</div>

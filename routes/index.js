@@ -45,6 +45,18 @@ router.param('boost', function(req, res, next, id) {
     });
 });
 
+router.put('/boosts/:boost', function(req, res) {
+    Boost.findOneAndUpdate({_id: req.body._id}, {
+        $set: {
+            name: req.body.name,
+            date: req.body.date,
+        }
+    }, function(err, result) {
+        if (err) {return res.send(err)}
+        res.send(result);
+    });
+});
+
 router.param('buyer', function(req, res, next, id) {
     var query = Buyer.findById(id);
 
@@ -102,12 +114,26 @@ router.post('/boosts/:boost/buyers', auth, function(req, res, next) {
 });
 
 router.delete('/boosts/:boost/buyers/:buyer', function(req, res) {
-    console.log(req);
     Buyer.findByIdAndRemove(req.buyer._id, function(err, buyer) {
         if(err){
             return err;
         }
         res.json(buyer);
+    });
+});
+
+router.put('/boosts/:boost/buyers/:buyer', function(req, res) {
+    console.log(req.body);
+    Buyer.findOneAndUpdate({_id: req.body._id}, {
+        $set: {
+            characterName: req.body.characterName,
+            battletag: req.body.battletag,
+            price : req.body.price,
+            what : req.body.what,
+        }
+    }, { returnNewDocument: true },function(err, result) {
+        if (err) {return res.send(err)}
+        res.send(result);
     });
 });
 
