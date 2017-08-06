@@ -108,8 +108,9 @@ router.post('/boosts/:boost/buyers', auth, function(req, res, next) {
         req.boost.save(function(err, buyer) {
             if(err){ return next(err); }
 
-            res.json(buyer);
+
         });
+        res.json(buyer);
     });
 });
 

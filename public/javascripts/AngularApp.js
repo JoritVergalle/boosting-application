@@ -211,7 +211,7 @@ app.controller('BoostsCtrl', [
 
         $scope.boost = boost;
 
-        $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+        $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
 
         $scope.addBuyer = function(){
             if(_.isEmpty($scope.characterName) || _.isEmpty($scope.battletag) || !_.isNumber($scope.price) || _.isEmpty($scope.what)) { return; }
@@ -220,10 +220,11 @@ app.controller('BoostsCtrl', [
                 battletag: $scope.battletag,
                 price: $scope.price,
                 what: $scope.what,
-                user: 'user'
+                boost: $scope.boost._id,
             }).success(function(buyer) {
-
-
+                buyer.boost = buyer.boost._id;
+                $scope.boost.buyers.push(buyer);
+                $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
             });
             $scope.cancelForm();
         };
@@ -231,7 +232,7 @@ app.controller('BoostsCtrl', [
         $scope.deleteBuyer = function(buyer) {
             boosts.deleteBuyer(buyer).success(function(buyer){
                 _.remove($scope.boost.buyers,{_id: buyer._id});
-                $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+                $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
             });
         };
 
