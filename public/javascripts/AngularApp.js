@@ -82,20 +82,27 @@ app.factory('boosts', ['$http', 'auth', function($http, auth){
         });
     };
     o.deleteBoost = function(boost){
-        return $http.delete('/boosts/' + boost._id).success(function(data) {
+        return $http.delete('/boosts/' + boost._id, {
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
+        }).success(function(data) {
             _.remove(o.boosts, {_id : data._id});
         });
     };
     o.editBoost = function(boost) {
-        return $http.put('/boosts/' + boost._id, boost).success(function(data) {
+        return $http.put('/boosts/' + boost._id, boost, {
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
+        }).success(function(data) {
             o.boosts[_.findIndex(o.boosts, {_id : data._id})] = boost;
         });
     };
     o.deleteBuyer = function(buyer) {
-        return $http.delete('/boosts/' + buyer.boost + '/buyers/' + buyer._id);
+        return $http.delete('/boosts/' + buyer.boost + '/buyers/' + buyer._id, {
+            headers: {Authorization: 'Bearer ' + auth.getToken()}});
     };
     o.editBuyer = function(buyer) {
-        return $http.put('/boosts/' + buyer.boost + '/buyers/' + buyer._id , buyer);
+        return $http.put('/boosts/' + buyer.boost + '/buyers/' + buyer._id , buyer, {
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
+        });
     };
     return o;
 }]);

@@ -45,7 +45,7 @@ router.param('boost', function(req, res, next, id) {
     });
 });
 
-router.put('/boosts/:boost', function(req, res) {
+router.put('/boosts/:boost', auth, function(req, res) {
     Boost.findOneAndUpdate({_id: req.body._id}, {
         $set: {
             name: req.body.name,
@@ -87,7 +87,7 @@ router.get('/boosts/:boost/buyers/:buyer', function(req, res, next) {
     });
 });
 
-router.delete('/boosts/:boost', function(req, res) {
+router.delete('/boosts/:boost', auth, function(req, res) {
     Boost.findByIdAndRemove(req.boost._id, function(err, boost) {
         if(err){
             return err;
@@ -114,7 +114,7 @@ router.post('/boosts/:boost/buyers', auth, function(req, res, next) {
     });
 });
 
-router.delete('/boosts/:boost/buyers/:buyer', function(req, res) {
+router.delete('/boosts/:boost/buyers/:buyer', auth, function(req, res) {
     Buyer.findByIdAndRemove(req.buyer._id, function(err, buyer) {
         if(err){
             return err;
@@ -123,7 +123,7 @@ router.delete('/boosts/:boost/buyers/:buyer', function(req, res) {
     });
 });
 
-router.put('/boosts/:boost/buyers/:buyer', function(req, res) {
+router.put('/boosts/:boost/buyers/:buyer', auth, function(req, res) {
     console.log(req.body);
     Buyer.findOneAndUpdate({_id: req.body._id}, {
         $set: {

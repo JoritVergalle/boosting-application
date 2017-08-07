@@ -22,7 +22,7 @@
             <td>
                 <gspan gold="buyer.price"></gspan>
             </td>
-            <td class="glyphicon glyphicon-edit" ng-click="showBuyer(buyer)"></td>
+            <td class="glyphicon glyphicon-edit" ng-click="showBuyer(buyer)" ng-show="isLoggedIn()"></td>
             <td class="glyphicon glyphicon-trash" ng-click="deleteBuyer(buyer)"></td>
         </tr>
     </table>
