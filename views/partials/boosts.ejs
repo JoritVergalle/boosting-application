@@ -19,19 +19,20 @@
             <td>{{buyer.battletag}}</td>
             <td>{{buyer.what}}</td>
             <td>{{buyer.finder}}</td>
-            <td><gspan gold="buyer.price"></gspan></td>
-            <td class="glyphicon glyphicon-edit" ng-click="showBuyer(buyer)"></td>
+            <td>
+                <gspan gold="buyer.price"></gspan>
+            </td>
+            <td class="glyphicon glyphicon-edit" ng-click="showBuyer(buyer)" ng-show="isLoggedIn()"></td>
             <td class="glyphicon glyphicon-trash" ng-click="deleteBuyer(buyer)"></td>
         </tr>
     </table>
 
     <div ng-show="isLoggedIn()">
-        <div ng-hide="showTableHideForm" >
+        <div ng-hide="showTableHideForm">
             <button type="button" class="btn btn-success" ng-click="showTableHideForm = true">Add a new buyer</button>
         </div>
     </div>
 </div>
-
 
 
 <div ng-hide="isLoggedIn()">
@@ -48,17 +49,22 @@
             <label>Character name</label>
             <input type="text"
                    class="form-control"
-                   ng-model="characterName"/>
+                   ng-model="characterName"
+                   required/>
             <label>Battlenet tag</label>
             <input type="text"
                    class="form-control"
-                   ng-model="battletag"/>
+                   ng-model="battletag"
+                   required/>
             <label>Price</label>
             <input type="number"
                    class="form-control"
-                   ng-model="price"/>
+                   ng-model="price"
+                   required/>
             <label name="what" for="what">Which boost</label>
-            <select class="form-control" required ng-model="what">
+            <select class="form-control" required ng-model="what"
+                    required>
+                <option></option>
                 <option>Full</option>
                 <option>Last boss</option>
             </select>
