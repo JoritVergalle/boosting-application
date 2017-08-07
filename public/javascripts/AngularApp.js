@@ -81,6 +81,22 @@ app.factory('boosts', ['$http', 'auth', function($http, auth){
             headers: {Authorization: 'Bearer '+auth.getToken()}
         });
     };
+    o.deleteBoost = function(boost){
+        return $http.delete('/boosts/' + boost._id).success(function(data) {
+            _.remove(o.boosts, {_id : data._id});
+        });
+    };
+    o.editBoost = function(boost) {
+        return $http.put('/boosts/' + boost._id, boost).success(function(data) {
+            o.boosts[_.findIndex(o.boosts, {_id : data._id})] = boost;
+        });
+    };
+    o.deleteBuyer = function(buyer) {
+        return $http.delete('/boosts/' + buyer.boost + '/buyers/' + buyer._id);
+    };
+    o.editBuyer = function(buyer) {
+        return $http.put('/boosts/' + buyer.boost + '/buyers/' + buyer._id , buyer);
+    };
     return o;
 }]);
 
@@ -133,6 +149,10 @@ app.controller('MainCtrl', [
     'boosts',
     'auth',
     function($scope, boosts, auth){
+        $scope.showTableHideForm = false;
+        $scope.editMode = false;
+        $scope.showedBoost = {};
+
         $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.boosts = boosts.boosts;
@@ -144,9 +164,36 @@ app.controller('MainCtrl', [
                 date: $scope.date,
                 buyers: []
             });
+            $scope.cancelForm();
 
+        };
+
+        $scope.deleteBoost = function(boost) {
+            boosts.deleteBoost(boost);
+        };
+
+        $scope.showBoost = function(boost) {
+            $scope.showTableHideForm = true;
+            $scope.name = boost.name;
+            $scope.date = new Date(boost.date);
+            $scope.editMode = true;
+            $scope.showedBoost = boost;
+        };
+
+        $scope.cancelForm = function() {
             $scope.name = '';
             $scope.date = '';
+            $scope.showTableHideForm = false;
+            $scope.editMode = false;
+        };
+
+        $scope.editBoost = function() {
+            boosts.editBoost({
+                _id : $scope.showedBoost._id,
+                name: $scope.name,
+                date : $scope.date,
+            });
+            $scope.cancelForm();
         };
     }]);
 
@@ -156,11 +203,15 @@ app.controller('BoostsCtrl', [
     'boost',
     'auth',
     function($scope, boosts, boost, auth){
+        $scope.showTableHideForm = false;
+        $scope.editMode = false;
+        $scope.showedBuyer = {};
+
         $scope.isLoggedIn = auth.isLoggedIn;
 
         $scope.boost = boost;
 
-        $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+        $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
 
         $scope.addBuyer = function(){
             if(_.isEmpty($scope.characterName) || _.isEmpty($scope.battletag) || !_.isNumber($scope.price) || _.isEmpty($scope.what)) { return; }
@@ -169,15 +220,56 @@ app.controller('BoostsCtrl', [
                 battletag: $scope.battletag,
                 price: $scope.price,
                 what: $scope.what,
-                user: 'user'
+                boost: $scope.boost._id,
             }).success(function(buyer) {
+                buyer.boost = buyer.boost._id;
                 $scope.boost.buyers.push(buyer);
+                $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
             });
+            $scope.cancelForm();
+        };
+
+        $scope.deleteBuyer = function(buyer) {
+            boosts.deleteBuyer(buyer).success(function(buyer){
+                _.remove($scope.boost.buyers,{_id: buyer._id});
+                $scope.totalGold = _.sum(_.map($scope.boost.buyers, 'price'));
+            });
+        };
+
+        $scope.showBuyer = function(buyer) {
+            $scope.showTableHideForm = true;
+            $scope.characterName = buyer.characterName;
+            $scope.battletag = buyer.battletag;
+            $scope.price = buyer.price;
+            $scope.what = buyer.what;
+            $scope.editMode = true;
+            $scope.showedBuyer = buyer;
+        };
+
+        $scope.cancelForm = function() {
             $scope.characterName = '';
             $scope.battletag = '';
             $scope.price = '';
-            $scope.author = '';
+            $scope.what= '',
+            $scope.showTableHideForm = false;
+            $scope.editMode = false;
+        };
 
+        $scope.editBuyer = function() {
+            var editedBuyer = {
+                _id : $scope.showedBuyer._id,
+                boost: $scope.showedBuyer.boost,
+                characterName : $scope.characterName,
+                battletag : $scope.battletag,
+                price : $scope.price,
+                what : $scope.what,
+                finder : $scope.showedBuyer.finder,
+            };
+            boosts.editBuyer(editedBuyer).success(function(buyer) {
+                $scope.boost.buyers[_.findIndex($scope.boost.buyers, {_id : buyer._id})] = editedBuyer;
+                $scope.totalGold = _.sum(_.map(boost.buyers, 'price'));
+            });
+            $scope.cancelForm();
         };
     }]);
 
@@ -213,3 +305,16 @@ app.controller('NavCtrl', [
         $scope.currentUser = auth.currentUser;
         $scope.logOut = auth.logOut;
     }]);
+
+app.directive('gspan', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            gold: '=gold'
+        },
+        template:
+        '<span>'
+        +'{{gold}}g'
+        +'</span>'
+    };
+});

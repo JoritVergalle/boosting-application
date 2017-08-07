@@ -45,12 +45,53 @@ router.param('boost', function(req, res, next, id) {
     });
 });
 
+router.put('/boosts/:boost', function(req, res) {
+    Boost.findOneAndUpdate({_id: req.body._id}, {
+        $set: {
+            name: req.body.name,
+            date: req.body.date,
+        }
+    }, function(err, result) {
+        if (err) {return res.send(err)}
+        res.send(result);
+    });
+});
+
+router.param('buyer', function(req, res, next, id) {
+    var query = Buyer.findById(id);
+
+    query.exec(function (err, buyer){
+        if (err) { return next(err); }
+        if (!buyer) { return next(new Error('can\'t find buyer')); }
+
+        req.buyer = buyer;
+        return next();
+    });
+});
 
 router.get('/boosts/:boost', function(req, res, next) {
     // to auto get all buyers in the boost
     req.boost.populate('buyers', function(err, boost) {
         if (err) { return next(err); }
 
+        res.json(boost);
+    });
+});
+
+router.get('/boosts/:boost/buyers/:buyer', function(req, res, next) {
+    // to auto get all buyers in the boost
+    req.boost.populate('buyers', function(err, boost) {
+        if (err) { return next(err); }
+
+        res.json(boost);
+    });
+});
+
+router.delete('/boosts/:boost', function(req, res) {
+    Boost.findByIdAndRemove(req.boost._id, function(err, boost) {
+        if(err){
+            return err;
+        }
         res.json(boost);
     });
 });
@@ -67,8 +108,33 @@ router.post('/boosts/:boost/buyers', auth, function(req, res, next) {
         req.boost.save(function(err, buyer) {
             if(err){ return next(err); }
 
-            res.json(buyer);
+
         });
+        res.json(buyer);
+    });
+});
+
+router.delete('/boosts/:boost/buyers/:buyer', function(req, res) {
+    Buyer.findByIdAndRemove(req.buyer._id, function(err, buyer) {
+        if(err){
+            return err;
+        }
+        res.json(buyer);
+    });
+});
+
+router.put('/boosts/:boost/buyers/:buyer', function(req, res) {
+    console.log(req.body);
+    Buyer.findOneAndUpdate({_id: req.body._id}, {
+        $set: {
+            characterName: req.body.characterName,
+            battletag: req.body.battletag,
+            price : req.body.price,
+            what : req.body.what,
+        }
+    }, { returnNewDocument: true },function(err, result) {
+        if (err) {return res.send(err)}
+        res.send(result);
     });
 });
 

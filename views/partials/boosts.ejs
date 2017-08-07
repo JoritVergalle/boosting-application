@@ -1,50 +1,71 @@
 <div class="page-header">
     <h1>
         {{boost.name}} - {{boost.date | date:'d/MM/yyyy'}}
-        <span style="float: right;">{{totalGold}}g</span>
+        <gspan style="float: right;" gold="totalGold"/>
     </h1>
 </div>
 
-<div ng-repeat="buyer in boost.buyers">
-    <b>{{buyer.characterName}}</b> ({{buyer.battletag}})
-    <span style="margin-left: 20px">{{buyer.price}}</span>
-    <span style="margin-left: 20px">for {{buyer.what}}</span>
-    <span style="float:right">added by {{buyer.finder}}</span>
+<div ng-hide="showTableHideForm">
+    <table class="table">
+        <thead>
+        <th>Character name</th>
+        <th>Battlenet tag</th>
+        <th>Run</th>
+        <th>Finder</th>
+        <th>Price</th>
+        </thead>
+        <tr ng-repeat="buyer in boost.buyers">
+            <td>{{buyer.characterName}}</td>
+            <td>{{buyer.battletag}}</td>
+            <td>{{buyer.what}}</td>
+            <td>{{buyer.finder}}</td>
+            <td><gspan gold="buyer.price"></gspan></td>
+            <td class="glyphicon glyphicon-edit" ng-click="showBuyer(buyer)"></td>
+            <td class="glyphicon glyphicon-trash" ng-click="deleteBuyer(buyer)"></td>
+        </tr>
+    </table>
+
+    <div ng-show="isLoggedIn()">
+        <div ng-hide="showTableHideForm" >
+            <button type="button" class="btn btn-success" ng-click="showTableHideForm = true">Add a new buyer</button>
+        </div>
+    </div>
 </div>
+
+
 
 <div ng-hide="isLoggedIn()">
     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a buyer.</h3>
 </div>
 
-<form ng-submit="addBuyer()"
-      ng-show="isLoggedIn()"
-      style="margin-top:30px;">
-    <h3>Add a new buyer</h3>
+<div ng-show="isLoggedIn()">
+    <form ng-submit="addBuyer()"
+          ng-show="showTableHideForm"
+          style="margin-top:30px;">
+        <h3 ng-hide="editMode">Add a new buyer</h3>
 
-    <div class="form-group">
-        <input type="text"
-               class="form-control"
-               placeholder="character name"
-               ng-model="characterName"/>
-    </div>
-    <div class="form-group">
-        <input type="text"
-               class="form-control"
-               placeholder="battletag"
-               ng-model="battletag"/>
-    </div>
-    <div class="form-group">
-        <input type="number"
-               class="form-control"
-               placeholder="price"
-               ng-model="price"/>
-    </div>
-    <div class="form-group">
-        <label name="what" for="what">Which boost</label>
-        <select class="form-control" required ng-model="what">
-            <option>Full</option>
-            <option>Last boss</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Add new buyer</button>
-</form>
+        <div class="form-group">
+            <label>Character name</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="characterName"/>
+            <label>Battlenet tag</label>
+            <input type="text"
+                   class="form-control"
+                   ng-model="battletag"/>
+            <label>Price</label>
+            <input type="number"
+                   class="form-control"
+                   ng-model="price"/>
+            <label name="what" for="what">Which boost</label>
+            <select class="form-control" required ng-model="what">
+                <option>Full</option>
+                <option>Last boss</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" ng-hide="editMode">Confirm</button>
+        <button class="btn btn-primary" type="button" ng-show="editMode" ng-click=editBuyer()>Edit</button>
+        <button type="button" class="btn btn-danger" ng-click="cancelForm()">Cancel</button>
+    </form>
+</div>
